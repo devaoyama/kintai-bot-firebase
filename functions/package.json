@@ -14,9 +14,11 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@slack/bolt": "^2.3.0",
     "@types/node": "^14.6.2",
     "@types/node-polyglot": "^2.4.1",
     "dayjs": "^1.8.34",
+    "dotenv": "^8.2.0",
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.6.1",
     "node-polyglot": "^2.4.0"
