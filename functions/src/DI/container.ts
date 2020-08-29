@@ -4,6 +4,10 @@ import {TYPES} from "./types";
 import {App, ExpressReceiver} from "@slack/bolt";
 import RequestFactory from "../factory/requestFactory";
 import UserFactory from "../factory/userFactory";
+import WorkedHoursCalculator from "../time-calculator/workedHoursCalculator";
+import OvertimeHoursCalculator from "../time-calculator/overtimeHoursCalculator";
+import MidnightHoursCalculator from "../time-calculator/midnightHoursCalculator";
+import Calculator from "../calculator";
 
 require("dotenv").config();
 
@@ -30,5 +34,10 @@ export default class Container extends PContainer{
 
         this.bind<RequestFactory>(TYPES.RequestFactory).to(RequestFactory);
         this.bind<UserFactory>(TYPES.UserFactory).to(UserFactory);
+
+        this.bind<WorkedHoursCalculator>(TYPES.workedHoursCalculator).to(WorkedHoursCalculator);
+        this.bind<OvertimeHoursCalculator>(TYPES.overtimeHoursCalculator).to(OvertimeHoursCalculator);
+        this.bind<MidnightHoursCalculator>(TYPES.midnightHoursCalculator).to(MidnightHoursCalculator);
+        this.bind<Calculator>(TYPES.Calculator).to(Calculator);
     }
 }
