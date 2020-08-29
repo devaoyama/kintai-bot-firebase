@@ -12,9 +12,8 @@ const app = new App({
     token: config.SLACK_TOKEN,
 });
 
-app.event('message', async ({say}) => {
+app.event('message', async ({event, say}) => {
     // コマンドがあるか
-    // ユーザーを探す
     // コマンド実行
     // メッセージ送信
     await say('hello world');
