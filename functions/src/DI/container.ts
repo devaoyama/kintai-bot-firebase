@@ -1,6 +1,9 @@
+import "reflect-metadata";
 import {Container as PContainer} from "inversify";
 import {TYPES} from "./types";
 import {App, ExpressReceiver} from "@slack/bolt";
+import RequestFactory from "../factory/requestFactory";
+import UserFactory from "../factory/userFactory";
 
 require("dotenv").config();
 
@@ -24,5 +27,8 @@ export default class Container extends PContainer{
                 receiver: context.container.get(TYPES.ExpressReceiver),
             });
         })).inSingletonScope();
+
+        this.bind<RequestFactory>(TYPES.RequestFactory).to(RequestFactory);
+        this.bind<UserFactory>(TYPES.UserFactory).to(UserFactory);
     }
 }

@@ -1,6 +1,7 @@
 import Container from "./DI/container";
 import {TYPES} from "./DI/types";
 import {App, ExpressReceiver} from "@slack/bolt";
+import RequestFactory from "./factory/requestFactory";
 
 // DIコンテナ起動
 const container = new Container();
@@ -11,8 +12,11 @@ export const expressReceiver = container.get<ExpressReceiver>(TYPES.ExpressRecei
 const app = container.get<App>(TYPES.App);
 
 app.event('message', async ({event, say}) => {
+    const request = await container.get<RequestFactory>(TYPES.RequestFactory).factory(event);
     // コマンドがあるか
     // コマンド実行
     // メッセージ送信
-    await say('hello world');
+    if (request) {
+        await say(request.user.email);
+    }
 });
