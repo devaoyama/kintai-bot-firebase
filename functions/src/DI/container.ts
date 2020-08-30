@@ -10,6 +10,7 @@ import MidnightHoursCalculator from "../time-calculator/midnightHoursCalculator"
 import Calculator from "../calculator";
 import I18nFactory from "../i18n/i18nFactory";
 import CommandResolver from "../commands/commandResolver";
+import UsersFactory from "../firestore/factory/usersFactory";
 
 require("dotenv").config();
 
@@ -41,6 +42,8 @@ export default class Container extends PContainer{
                 receiver: context.container.get(TYPES.ExpressReceiver),
             });
         })).inSingletonScope();
+
+        this.bind<UsersFactory>(TYPES.UsersFactory).to(UsersFactory);
 
         this.bind<I18nFactory>(TYPES.I18nFactory).to(I18nFactory);
 
