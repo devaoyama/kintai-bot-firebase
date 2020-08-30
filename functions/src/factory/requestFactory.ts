@@ -7,7 +7,7 @@ import {TYPES} from "../DI/types";
 @injectable()
 export default class RequestFactory {
     constructor(
-        @inject(TYPES.UserFactory) readonly userResolver: UserFactory,
+        @inject(TYPES.UserFactory) readonly userFactory: UserFactory,
         @inject(TYPES.SlackChannelId) readonly slackChannelId: string
     ) {}
 
@@ -20,7 +20,7 @@ export default class RequestFactory {
             return null;
         }
 
-        const user = await this.userResolver.resolve(event.user);
+        const user = await this.userFactory.factory(event.user);
 
         return new Request(event.text, user);
     }

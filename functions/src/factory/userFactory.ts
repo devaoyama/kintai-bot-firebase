@@ -7,7 +7,7 @@ import {App} from "@slack/bolt";
 export default class UserFactory {
     constructor(@inject(TYPES.App) readonly app: App, @inject(TYPES.SlackToken) readonly slackToken: string) {}
 
-    async resolve(userID: string) {
+    async factory(userID: string) {
         const result = await this.app.client.users.info({
             token: this.slackToken,
             user: userID
