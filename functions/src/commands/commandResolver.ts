@@ -4,6 +4,7 @@ import Request from "../request";
 import I18n from "../i18n/i18n";
 import Container = interfaces.Container;
 import I18nFactory from "../i18n/i18nFactory";
+import {Command} from "../interfaces";
 
 @injectable()
 export default class CommandResolver {
@@ -13,7 +14,7 @@ export default class CommandResolver {
         @inject(TYPES.I18nFactory) readonly i18nFactory: I18nFactory
     ) {}
 
-    resolve(request: Request) {
+    resolve(request: Request): Command | null {
         // セットされているロケール
         const defaultLocale = request.user.getLocale();
         let i18n = this.i18nFactory.factory(defaultLocale);
@@ -38,7 +39,7 @@ export default class CommandResolver {
         return null;
     }
 
-    private getCommand(i18n: I18n, request: Request) {
+    private getCommand(i18n: I18n, request: Request): Command | null {
         const commands = i18n.getCommands();
         for (const key of Object.keys(commands)) {
             const matcher = new RegExp(commands[key]);
@@ -51,7 +52,7 @@ export default class CommandResolver {
         return null;
     }
 
-    private registry(key: string) {
+    private registry(key: string): Command {
         // @ts-ignore
         return this.container.get(TYPES[`Command${key.charAt(0).toUpperCase() + key.slice(1)}`]);
     }
