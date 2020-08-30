@@ -3,9 +3,7 @@ import * as dayjs from "dayjs";
 import Dayjs = dayjs.Dayjs;
 
 export default class I18n extends Polyglot {
-    readonly acceptableLocale: string[] = ['ja'];
-
-    constructor(locale: string, private messages: {[key: string]: {}}) {
+    constructor(locale: string, private messages: {[key: string]: {}}, readonly acceptableLocale: string[]) {
         super({phrases: messages, locale: locale});
     }
 

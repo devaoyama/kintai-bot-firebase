@@ -8,6 +8,8 @@ import WorkedHoursCalculator from "../time-calculator/workedHoursCalculator";
 import OvertimeHoursCalculator from "../time-calculator/overtimeHoursCalculator";
 import MidnightHoursCalculator from "../time-calculator/midnightHoursCalculator";
 import Calculator from "../calculator";
+import I18nFactory from "../i18n/i18nFactory";
+import CommandResolver from "../commands/commandResolver";
 
 require("dotenv").config();
 
@@ -16,6 +18,14 @@ export default class Container extends PContainer{
         this.bind(TYPES.SlackSecret).toConstantValue(process.env.SLACK_SECRET || '');
         this.bind(TYPES.SlackToken).toConstantValue(process.env.SLACK_TOKEN || '');
         this.bind(TYPES.SlackChannelId).toConstantValue(process.env.SLACK_CHANNEL_ID || '');
+        this.bind(TYPES.Container).toConstantValue(this);
+        this.bind(TYPES.AcceptableLocale).toDynamicValue(() => {
+            const locales = process.env.ACCEPTABLE_LOCALE;
+            if (locales) {
+                return locales.split(',');
+            }
+            return ['ja'];
+        });
 
         this.bind<ExpressReceiver>(TYPES.ExpressReceiver).toDynamicValue((context => {
             return new ExpressReceiver({
@@ -32,8 +42,12 @@ export default class Container extends PContainer{
             });
         })).inSingletonScope();
 
+        this.bind<I18nFactory>(TYPES.I18nFactory).to(I18nFactory);
+
         this.bind<RequestFactory>(TYPES.RequestFactory).to(RequestFactory);
         this.bind<UserFactory>(TYPES.UserFactory).to(UserFactory);
+
+        this.bind<CommandResolver>(TYPES.CommandResolver).to(CommandResolver);
 
         this.bind<WorkedHoursCalculator>(TYPES.workedHoursCalculator).to(WorkedHoursCalculator);
         this.bind<OvertimeHoursCalculator>(TYPES.overtimeHoursCalculator).to(OvertimeHoursCalculator);

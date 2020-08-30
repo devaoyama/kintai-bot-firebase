@@ -4,4 +4,12 @@ export default class User {
         readonly username: string,
         readonly email: string,
     ) {}
+
+    getLocale() {
+        return 'ja';
+    }
+
+    setLocale(locale: string) {
+        return 'ja';
+    }
 }
