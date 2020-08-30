@@ -2,6 +2,11 @@ import Container from "./DI/container";
 import {TYPES} from "./DI/types";
 import {App, ExpressReceiver} from "@slack/bolt";
 import RequestFactory from "./factory/requestFactory";
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+
+// firebase-adminの初期化
+admin.initializeApp(functions.config().firebase);
 
 // DIコンテナ起動
 const container = new Container();
@@ -17,6 +22,6 @@ app.event('message', async ({event, say}) => {
     // コマンド実行
     // メッセージ送信
     if (request) {
-        await say(request.user.email);
+        await say(request.body);
     }
 });

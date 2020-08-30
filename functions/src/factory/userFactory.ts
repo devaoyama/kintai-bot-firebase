@@ -2,10 +2,15 @@ import User from "../user";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../DI/types";
 import {App} from "@slack/bolt";
+import UsersFactory from "../firestore/factory/usersFactory";
 
 @injectable()
 export default class UserFactory {
-    constructor(@inject(TYPES.App) readonly app: App, @inject(TYPES.SlackToken) readonly slackToken: string) {}
+    constructor(
+        @inject(TYPES.App) readonly app: App,
+        @inject(TYPES.SlackToken) readonly slackToken: string,
+        @inject(TYPES.UsersFactory) readonly usersFactory: UsersFactory
+    ) {}
 
     async factory(userID: string) {
         const result = await this.app.client.users.info({
@@ -13,6 +18,8 @@ export default class UserFactory {
             user: userID
         });
         // @ts-ignore
-        return new User(userID, result.user.name, result.user.profile.email);
+        const users = await this.usersFactory.factory(result.user.profile.email, userID, result.user.name);
+        console.log(users.getUser());
+        return new User(users);
     }
 }

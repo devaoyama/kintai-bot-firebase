@@ -1,9 +1,7 @@
+import Users from "./firestore/users";
+
 export default class User {
-    constructor(
-        readonly userID: string,
-        readonly username: string,
-        readonly email: string,
-    ) {}
+    constructor(readonly users: Users) {}
 
     getLocale() {
         return 'ja';
