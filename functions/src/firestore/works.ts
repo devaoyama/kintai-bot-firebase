@@ -5,13 +5,15 @@ import {Work} from "../interfaces";
 export default class Works {
     private work: Work | undefined;
 
-    constructor(readonly documentCollection: admin.firestore.DocumentReference) {}
+    private workRef: admin.firestore.DocumentReference | undefined;
+
+    constructor(readonly documentReference: admin.firestore.DocumentReference) {}
 
     async init(date: Dayjs) {
         const works = await this.get(date);
         if (!works) {
             const work: Work = {
-                date: date.toDate(),
+                date: date.startOf('day').toDate(),
                 sign_in: null,
                 sign_out: null,
                 rest_time: null,
@@ -19,26 +21,32 @@ export default class Works {
                 overwork_hours: null,
                 midnight_work_hours: null,
             }
-            await this.set(work);
+            this.setWork(work)
+            this.workRef = await this.documentReference.collection('works').add(work);
         }
     }
 
     async get(date: Dayjs) {
-        const worksData = await this.documentCollection
+        const worksData = await this.documentReference
             .collection('works')
-            .where('date', '==', date.toDate())
+            .where('date', '==', date.startOf('day').toDate())
             .get();
+        console.log(worksData.empty);
         if (worksData.empty) {
             return null;
         }
+        console.log(worksData.docs[0].data());
         // @ts-ignore
         this.setWork(worksData.docs[0].data());
+        this.workRef = worksData.docs[0].ref;
         return this.work;
     }
 
     async set(work: Work) {
-        await this.documentCollection.collection('works').add(work);
-        this.setWork(work);
+        if (this.workRef) {
+            await this.workRef.set(work);
+            this.setWork(work);
+        }
     }
 
     getWork() {

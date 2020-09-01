@@ -11,6 +11,7 @@ import Calculator from "../calculator";
 import I18nFactory from "../i18n/i18nFactory";
 import CommandResolver from "../commands/commandResolver";
 import UsersFactory from "../firestore/factory/usersFactory";
+import CommandSignIn from "../commands/commandSignIn";
 
 require("dotenv").config();
 
@@ -51,6 +52,7 @@ export default class Container extends PContainer{
         this.bind<UserFactory>(TYPES.UserFactory).to(UserFactory);
 
         this.bind<CommandResolver>(TYPES.CommandResolver).to(CommandResolver);
+        this.bind<CommandSignIn>(TYPES.CommandSignIn).to(CommandSignIn);
 
         this.bind<WorkedHoursCalculator>(TYPES.workedHoursCalculator).to(WorkedHoursCalculator);
         this.bind<OvertimeHoursCalculator>(TYPES.overtimeHoursCalculator).to(OvertimeHoursCalculator);
