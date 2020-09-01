@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import {User} from "../interfaces";
+import Works from "./works";
 
 export default class Users {
     readonly db = admin.firestore();
@@ -34,5 +35,12 @@ export default class Users {
 
     setUser(user: User) {
         this.user = user;
+    }
+
+    getWorks(): Works | null {
+        if (this.user) {
+            return new Works(this.db.collection('user').doc(this.user.uid));
+        }
+        return null;
     }
 }

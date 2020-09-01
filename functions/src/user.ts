@@ -3,11 +3,19 @@ import Users from "./firestore/users";
 export default class User {
     constructor(readonly users: Users) {}
 
-    getLocale() {
+    getLocale(): string {
+        const user = this.users.getUser();
+        if (user) {
+            return user.locale;
+        }
         return 'ja';
     }
 
-    setLocale(locale: string) {
-        return 'ja';
+    async setLocale(locale: string) {
+        const user = this.users.getUser();
+        if (user) {
+            user.locale = locale;
+            await this.users.setData(user);
+        }
     }
 }

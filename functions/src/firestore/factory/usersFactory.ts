@@ -19,6 +19,7 @@ export default class UsersFactory {
             email: email,
             slack_uid: userID,
             slack_username: username,
+            locale: 'ja',
         };
         const users = new Users();
         await users.init(user);
