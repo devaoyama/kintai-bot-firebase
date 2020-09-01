@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
 import {User} from "../interfaces";
 import Works from "./works";
+import {Dayjs} from "dayjs";
 
 export default class Users {
     readonly db = admin.firestore();
@@ -37,9 +38,11 @@ export default class Users {
         this.user = user;
     }
 
-    getWorks(): Works | null {
+    async getWorks(date: Dayjs) {
         if (this.user) {
-            return new Works(this.db.collection('user').doc(this.user.uid));
+            const works = new Works(this.db.collection('users').doc(this.user.uid));
+            await works.init(date);
+            return works;
         }
         return null;
     }

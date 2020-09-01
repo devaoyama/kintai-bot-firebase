@@ -7,6 +7,22 @@ export default class Works {
 
     constructor(readonly documentCollection: admin.firestore.DocumentReference) {}
 
+    async init(date: Dayjs) {
+        const works = await this.get(date);
+        if (!works) {
+            const work: Work = {
+                date: date.toDate(),
+                sign_in: null,
+                sign_out: null,
+                rest_time: null,
+                work_hours: null,
+                overwork_hours: null,
+                midnight_work_hours: null,
+            }
+            await this.set(work);
+        }
+    }
+
     async get(date: Dayjs) {
         const worksData = await this.documentCollection
             .collection('works')
