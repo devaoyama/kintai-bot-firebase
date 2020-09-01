@@ -6,6 +6,7 @@ const TYPES = {
     AcceptableLocale: Symbol.for("AcceptableLocale"),
     ExpressReceiver: Symbol.for("ExpressReceiver"),
     App: Symbol.for("App"),
+    UsersFactory: Symbol.for("UsersFactory"),
     I18nFactory: Symbol.for("I18nFactory"),
     RequestFactory: Symbol.for("RequestFactory"),
     UserFactory: Symbol.for("UserFactory"),
