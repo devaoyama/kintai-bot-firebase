@@ -31,11 +31,9 @@ export default class Works {
             .collection('works')
             .where('date', '==', date.startOf('day').toDate())
             .get();
-        console.log(worksData.empty);
         if (worksData.empty) {
             return null;
         }
-        console.log(worksData.docs[0].data());
         // @ts-ignore
         this.setWork(worksData.docs[0].data());
         this.workRef = worksData.docs[0].ref;

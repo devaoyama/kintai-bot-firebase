@@ -1,5 +1,6 @@
 import I18n from "./i18n/i18n";
 import Request from "./request";
+import * as admin from "firebase-admin";
 
 export interface Command {
     execute(request: Request, i18n: I18n): Promise<string>;
@@ -14,9 +15,9 @@ export interface User {
 }
 
 export interface Work {
-    date: Date,
-    sign_in: Date | null,
-    sign_out: Date | null,
+    date: Date | admin.firestore.Timestamp,
+    sign_in: Date | admin.firestore.Timestamp | null,
+    sign_out: Date | admin.firestore.Timestamp | null,
     rest_time: number | null,
     work_hours: number | null,
     overwork_hours: number | null,

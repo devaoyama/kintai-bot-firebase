@@ -37,7 +37,6 @@ export default class I18n extends Polyglot {
         const matches = str.match(reg);
 
         if (matches) {
-            console.log(matches);
             let hour = Number(matches[2]) || Number(matches[4]);
             let min = Number(matches[3]) || Number(matches[5]) || 0;
 
