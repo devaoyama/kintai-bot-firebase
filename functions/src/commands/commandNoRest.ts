@@ -4,11 +4,12 @@ import I18n from "../i18n/i18n";
 import * as dayjs from "dayjs";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../DI/types";
+import Calculator from "../calculator";
 
 @injectable()
 export default class CommandNoRest implements Command {
 
-    constructor(@inject(TYPES.CommandDayTotal) readonly commandDayTotal: Command) {}
+    constructor(@inject(TYPES.Calculator) readonly calculator: Calculator) {}
     async execute(request: Request, i18n: I18n): Promise<string> {
         const user = request.user;
 
@@ -19,8 +20,13 @@ export default class CommandNoRest implements Command {
         const date = parsedDate || now;
 
         const works = await user.users.getWorks(date);
+
         if (!works) {
-            return '';
+            // レコードがない
+            return i18n.template('signInFirst', {
+                username: user.getUsername(),
+                date: date.format('YYYY/MM/DD')
+            });
         }
 
         let work = works.getWork();
@@ -33,11 +39,12 @@ export default class CommandNoRest implements Command {
                 });
             } else {
                 work.rest_time = 0;
+                work = this.calculator.calculate(work);
                 await works.set(work);
-                await this.commandDayTotal.execute(request, i18n);
                 return '休憩なしに変更';
             }
         }
-        return '';
+
+        return 'invalid date';
     }
 }

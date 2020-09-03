@@ -4,11 +4,12 @@ import I18n from "../i18n/i18n";
 import * as dayjs from "dayjs";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../DI/types";
+import Calculator from "../calculator";
 
 @injectable()
 export default class CommandRestHours implements Command {
 
-    constructor(@inject(TYPES.CommandDayTotal) readonly commandDayTotal: Command) {}
+    constructor(@inject(TYPES.Calculator) readonly calculator: Calculator) {}
     async execute(request: Request, i18n: I18n): Promise<string> {
         const user = request.user;
 
@@ -16,7 +17,7 @@ export default class CommandRestHours implements Command {
 
         const restHours = i18n.parseHours(request.body);
         if (!restHours) {
-            return '';
+            return '時間が指定されていません';
         }
 
         const parsedDate = i18n.parseDate(request.body);
@@ -38,8 +39,8 @@ export default class CommandRestHours implements Command {
                 });
             } else {
                 work.rest_time = restHours;
+                work = this.calculator.calculate(work);
                 await works.set(work);
-                await this.commandDayTotal.execute(request, i18n);
                 return '休憩時間を変更';
             }
         }

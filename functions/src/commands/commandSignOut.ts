@@ -4,10 +4,11 @@ import I18n from "../i18n/i18n";
 import * as dayjs from "dayjs";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../DI/types";
+import Calculator from "../calculator";
 
 @injectable()
 export default class CommandSignOut implements Command {
-    constructor(@inject(TYPES.CommandDayTotal) readonly commandDayTotal: Command) {}
+    constructor(@inject(TYPES.Calculator) readonly calculator: Calculator) {}
 
     async execute(request: Request, i18n: I18n): Promise<string> {
         const user = request.user;
@@ -24,10 +25,14 @@ export default class CommandSignOut implements Command {
         const works = await user.users.getWorks(datetime);
 
         if (!works) {
-            return '';
+            // レコードがない
+            return i18n.template('signInFirst', {
+                username: user.getUsername(),
+                date: date.format('YYYY/MM/DD')
+            });
         }
 
-        const work = works.getWork();
+        let work = works.getWork();
 
         let message = '';
         if (work) {
@@ -45,15 +50,14 @@ export default class CommandSignOut implements Command {
                 })
             }
 
-            if (work.sign_out) {
-                work.sign_out = datetime.toDate();
-                await works.set(work);
-                await this.commandDayTotal.execute(request, i18n);
+            const signOut = work.sign_out;
+            work.sign_out = datetime.toDate();
+            work = this.calculator.calculate(work);
+            await works.set(work);
+
+            if (signOut) {
                 message = '退勤日時を更新しました';
             } else {
-                work.sign_out = datetime.toDate();
-                await works.set(work);
-                await this.commandDayTotal.execute(request, i18n);
                 message = '退勤しました';
             }
         }
