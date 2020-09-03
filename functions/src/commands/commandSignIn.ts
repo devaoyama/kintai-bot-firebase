@@ -3,6 +3,7 @@ import Request from "../request";
 import I18n from "../i18n/i18n";
 import * as dayjs from "dayjs";
 import {injectable} from "inversify";
+import * as admin from "firebase-admin";
 
 @injectable()
 export default class CommandSignIn implements Command {
@@ -28,7 +29,7 @@ export default class CommandSignIn implements Command {
 
         if (!work) {
             work = {
-                date: datetime.startOf('day').toDate(),
+                date: admin.firestore.Timestamp.fromDate(datetime.startOf('day').toDate()),
                 sign_in: null,
                 sign_out: null,
                 rest_time: null,
@@ -46,7 +47,7 @@ export default class CommandSignIn implements Command {
                     date: date.format('YYYY/MM/DD')
                 });
             } else {
-                work.sign_in = datetime.toDate();
+                work.sign_in = admin.firestore.Timestamp.fromDate(datetime.toDate());
                 await works.set(work);
                 return i18n.template('signInUpdate', {
                     username: user.getUsername(),
@@ -55,7 +56,7 @@ export default class CommandSignIn implements Command {
                 });
             }
         } else {
-            work.sign_in = datetime.toDate();
+            work.sign_in = admin.firestore.Timestamp.fromDate(datetime.toDate());
             work.rest_time = 1;
             await works.set(work);
             return i18n.template('signIn', {

@@ -5,6 +5,7 @@ import * as dayjs from "dayjs";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../DI/types";
 import Calculator from "../calculator";
+import * as admin from "firebase-admin";
 
 @injectable()
 export default class CommandSignOut implements Command {
@@ -51,7 +52,7 @@ export default class CommandSignOut implements Command {
             }
 
             const signOut = work.sign_out;
-            work.sign_out = datetime.toDate();
+            work.sign_out = admin.firestore.Timestamp.fromDate(datetime.toDate());
             work = this.calculator.calculate(work);
             await works.set(work);
 

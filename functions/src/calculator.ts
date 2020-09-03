@@ -16,9 +16,7 @@ export default class Calculator {
 
     calculate(work: Work): Work {
         if (work.sign_in && work.sign_out) {
-            // @ts-ignore
             const signIn = dayjs(work.sign_in.toDate());
-            // @ts-ignore
             const signOut = dayjs(work.sign_out.toDate());
             const restTime = work.rest_time || 0;
 
