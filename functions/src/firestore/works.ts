@@ -10,20 +10,7 @@ export default class Works {
     constructor(readonly documentReference: admin.firestore.DocumentReference) {}
 
     async init(date: Dayjs) {
-        const works = await this.get(date);
-        if (!works) {
-            const work: Work = {
-                date: date.startOf('day').toDate(),
-                sign_in: null,
-                sign_out: null,
-                rest_time: null,
-                work_hours: null,
-                overwork_hours: null,
-                midnight_work_hours: null,
-            }
-            this.setWork(work)
-            this.workRef = await this.documentReference.collection('works').add(work);
-        }
+        await this.get(date);
     }
 
     async get(date: Dayjs) {
@@ -38,6 +25,11 @@ export default class Works {
         this.setWork(worksData.docs[0].data());
         this.workRef = worksData.docs[0].ref;
         return this.work;
+    }
+
+    async add(work: Work) {
+        this.workRef = await this.documentReference.collection('works').add(work);
+        this.setWork(work);
     }
 
     async set(work: Work) {

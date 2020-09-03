@@ -21,38 +21,47 @@ export default class CommandSignIn implements Command {
         const works = await user.users.getWorks(datetime);
 
         if (!works) {
-            return '';
+            return 'エラー';
         }
 
-        const work = works.getWork();
+        let work = works.getWork();
 
-        if (work) {
-            if (work.sign_in) {
-                if (!parsedDate) {
-                    return i18n.template('alreadySignedIn', {
-                        username: user.getUsername(),
-                        date: date.format('YYYY/MM/DD')
-                    });
-                } else {
-                    work.sign_in = datetime.toDate();
-                    await works.set(work);
-                    return i18n.template('signInUpdate', {
-                        username: user.getUsername(),
-                        date: datetime.format('YYYY/MM/DD'),
-                        time: datetime.format('HH:mm')
-                    });
-                }
+        if (!work) {
+            work = {
+                date: datetime.startOf('day').toDate(),
+                sign_in: null,
+                sign_out: null,
+                rest_time: null,
+                work_hours: null,
+                overwork_hours: null,
+                midnight_work_hours: null,
+            };
+            await works.add(work);
+        }
+
+        if (work.sign_in) {
+            if (!parsedDate) {
+                return i18n.template('alreadySignedIn', {
+                    username: user.getUsername(),
+                    date: date.format('YYYY/MM/DD')
+                });
             } else {
                 work.sign_in = datetime.toDate();
-                work.rest_time = 1;
                 await works.set(work);
-                return i18n.template('signIn', {
+                return i18n.template('signInUpdate', {
                     username: user.getUsername(),
-                    datetime: datetime.format('YYYY/MM/DD HH:mm')
+                    date: datetime.format('YYYY/MM/DD'),
+                    time: datetime.format('HH:mm')
                 });
             }
+        } else {
+            work.sign_in = datetime.toDate();
+            work.rest_time = 1;
+            await works.set(work);
+            return i18n.template('signIn', {
+                username: user.getUsername(),
+                datetime: datetime.format('YYYY/MM/DD HH:mm')
+            });
         }
-
-        return 'invalid date';
     }
 }
