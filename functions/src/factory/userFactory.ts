@@ -19,7 +19,6 @@ export default class UserFactory {
         });
         // @ts-ignore
         const users = await this.usersFactory.factory(result.user.profile.email, userID, result.user.name);
-        console.log(users.getUser());
         return new User(users);
     }
 }

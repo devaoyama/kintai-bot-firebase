@@ -3,6 +3,8 @@ import {TYPES} from "./DI/types";
 import WorkedHoursCalculator from "./time-calculator/workedHoursCalculator";
 import OvertimeHoursCalculator from "./time-calculator/overtimeHoursCalculator";
 import MidnightHoursCalculator from "./time-calculator/midnightHoursCalculator";
+import {Work} from "./interfaces";
+import * as dayjs from "dayjs";
 
 @injectable()
 export default class Calculator {
@@ -12,13 +14,16 @@ export default class Calculator {
         @inject(TYPES.midnightHoursCalculator) private midnightHoursCalculator: MidnightHoursCalculator,
     ) {}
 
-    calculate(row: any): void {
-        const signIn = row.getSignIn();
-        const signOut = row.getSignOut();
-        const restTime = row.getRestTimeHours() || 0;
+    calculate(work: Work): Work {
+        if (work.sign_in && work.sign_out) {
+            const signIn = dayjs(work.sign_in.toDate());
+            const signOut = dayjs(work.sign_out.toDate());
+            const restTime = work.rest_time || 0;
 
-        row.setWorkedHours(this.workedHourCalculator.calculate(signIn, signOut, restTime));
-        row.setOvertimeHours(this.overtimeHoursCalculator.calculate(signIn, signOut, restTime));
-        row.setMidnightHours(this.midnightHoursCalculator.calculate(signIn, signOut, restTime));
+            work.work_hours = this.workedHourCalculator.calculate(signIn, signOut, restTime);
+            work.overwork_hours = this.overtimeHoursCalculator.calculate(signIn, signOut, restTime);
+            work.midnight_work_hours = this.midnightHoursCalculator.calculate(signIn, signOut, restTime);
+        }
+        return work;
     }
 }

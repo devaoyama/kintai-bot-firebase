@@ -1,9 +1,9 @@
 import I18n from "./i18n/i18n";
 import Request from "./request";
-import {Dayjs} from "dayjs";
+import * as admin from "firebase-admin";
 
 export interface Command {
-    execute(request: Request, i18n: I18n): string;
+    execute(request: Request, i18n: I18n): Promise<string>;
 }
 
 export interface User {
@@ -15,9 +15,9 @@ export interface User {
 }
 
 export interface Work {
-    date: Dayjs,
-    sign_in: Dayjs,
-    sign_out: Dayjs | null,
+    date: admin.firestore.Timestamp | null,
+    sign_in: admin.firestore.Timestamp | null,
+    sign_out: admin.firestore.Timestamp | null,
     rest_time: number | null,
     work_hours: number | null,
     overwork_hours: number | null,
