@@ -57,9 +57,22 @@ export default class CommandSignOut implements Command {
             await works.set(work);
 
             if (signOut) {
-                message = '退勤日時を更新しました';
+                message = i18n.template('signOutUpdate', {
+                    username: user.getUsername(),
+                    date: datetime.format('YYYY/MM/DD'),
+                    time: datetime.format('HH:mm'),
+                    signIn: dayjs(work.sign_in?.toDate()).format('HH:mm'),
+                    signOut: dayjs(work.sign_out?.toDate()).format('HH:mm'),
+                    workedHours: work.work_hours,
+                });
             } else {
-                message = '退勤しました';
+                message = message = i18n.template('signOut', {
+                    username: user.getUsername(),
+                    datetime: datetime.format('YYYY/MM/DD HH:mm'),
+                    signIn: dayjs(work.sign_in?.toDate()).format('HH:mm'),
+                    signOut: dayjs(work.sign_out?.toDate()).format('HH:mm'),
+                    workedHours: work.work_hours,
+                });
             }
         }
 

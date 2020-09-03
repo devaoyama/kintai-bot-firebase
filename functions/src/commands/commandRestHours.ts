@@ -41,7 +41,13 @@ export default class CommandRestHours implements Command {
                 work.rest_time = restHours;
                 work = this.calculator.calculate(work);
                 await works.set(work);
-                return '休憩時間を変更';
+                return i18n.template('noRest', {
+                    username: user.getUsername(),
+                    date: date.format('YYYY/MM/DD'),
+                    signIn: dayjs(work.sign_in?.toDate()).format('HH:mm'),
+                    signOut: dayjs(work.sign_out?.toDate()).format('HH:mm'),
+                    workedHours: work.work_hours,
+                });
             }
         }
         return '';
